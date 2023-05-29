@@ -12,7 +12,7 @@ const adminPermission = async (req, reply, next) => {
 
   console.log('grand list', grandList);
   ac.setGrants(grandList);
-  console.log(ac.getGrants());
+  // console.log(ac.getGrants());
   const permission = ac.can(role).createAny('product');
 
   console.log('permission', permission);

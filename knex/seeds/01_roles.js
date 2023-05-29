@@ -3,57 +3,29 @@
  * @returns { Promise<void> }
  */
 exports.seed = async function (knex) {
-  // Deletes ALL existing entries
-  await knex('roles').del();
+  await Promise.all([knex('users').del(), knex('roles').del()]);
+
   await knex('roles').insert([
     {
       id: 1,
-      role: 'admin',
-      resource: 'product',
-      action: 'create:any'
+      name: 'admin',
+      permissions: JSON.stringify([{ action: 'manage', subject: 'all' }])
     },
     {
       id: 2,
-      role: 'admin',
-      resource: 'product',
-      action: 'read:any'
-    },
-    {
-      id: 3,
-      role: 'admin',
-      resource: 'product',
-      action: 'update:any'
-    },
-    {
-      id: 4,
-      role: 'admin',
-      resource: 'product',
-      action: 'delete:any'
-    },
-
-    {
-      id: 5,
-      role: 'user',
-      resource: 'product',
-      action: 'create:own'
-    },
-    {
-      id: 6,
-      role: 'user',
-      resource: 'product',
-      action: 'read:any'
-    },
-    {
-      id: 7,
-      role: 'user',
-      resource: 'product',
-      action: 'update:own'
-    },
-    {
-      id: 8,
-      role: 'user',
-      resource: 'product',
-      action: 'delete:own'
+      name: 'member',
+      permissions: JSON.stringify([
+        { action: 'read', subject: 'Article' },
+        {
+          action: 'update',
+          subject: 'Article',
+          conditions: { author_id: 1 }
+        }
+      ])
     }
+  ]);
+  await knex('users').insert([
+    { id: 1, email: 'admin@casl.io', password: '123456', role_id: 1 },
+    { id: 2, email: 'member@casl.io', password: '123456', role_id: 2 }
   ]);
 };
